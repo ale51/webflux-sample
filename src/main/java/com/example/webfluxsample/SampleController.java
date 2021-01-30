@@ -56,6 +56,28 @@ public class SampleController {
         return Mono.just("Hello, World");
     }
 
+    @GetMapping("/defer-test")
+    public Mono<String> defer() throws InterruptedException {
+
+        // just
+        System.out.println("just");
+        Mono<Long> just = Mono.just(System.currentTimeMillis());
+        just.subscribe(SampleController::printWithThread);
+        Thread.sleep(1000L);
+        just.subscribe(SampleController::printWithThread);
+
+        // defer
+        System.out.println("defer");
+        Mono<Long> defer = Mono.defer(()->{
+            return Mono.just(System.currentTimeMillis());
+        });
+        defer.subscribe(SampleController::printWithThread);
+        Thread.sleep(1000L);
+        defer.subscribe(SampleController::printWithThread);
+
+        return Mono.just("Hello, World");
+    }
+
     // print with thread name and time.
     public static void printWithThread(Object obj) {
         System.out.println(System.currentTimeMillis() + ": " + Thread.currentThread().getName() + "\t" + obj);
