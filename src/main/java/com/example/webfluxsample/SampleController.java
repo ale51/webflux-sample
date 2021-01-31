@@ -61,19 +61,19 @@ public class SampleController {
 
         // just
         System.out.println("just");
-        Mono<Long> just = Mono.just(System.currentTimeMillis());
-        just.subscribe(SampleController::printWithThread);
+        Mono<Long> hotPublisher = Mono.just(System.currentTimeMillis());
+        hotPublisher.subscribe(SampleController::printWithThread);
         Thread.sleep(1000L);
-        just.subscribe(SampleController::printWithThread);
+        hotPublisher.subscribe(SampleController::printWithThread);
 
         // defer
         System.out.println("defer");
-        Mono<Long> defer = Mono.defer(()->{
+        Mono<Long> coldPublisher = Mono.defer(()->{
             return Mono.just(System.currentTimeMillis());
         });
-        defer.subscribe(SampleController::printWithThread);
+        coldPublisher.subscribe(SampleController::printWithThread);
         Thread.sleep(1000L);
-        defer.subscribe(SampleController::printWithThread);
+        coldPublisher.subscribe(SampleController::printWithThread);
 
         return Mono.just("Hello, World");
     }
